@@ -98,3 +98,32 @@ orderLists.addEventListener('click', event => {
 })
 // 添加一個 deleteDrink 方法
 AlphaPos.prototype.deleteDrink = target => { target.remove() }
+
+//結帳 ↓↓↓
+// 計算總金額
+// 取出所有價格之後，可以透過 forEach 方法來逐一處理每一個 data - drink - price 元素。把這個過程定義為 checkout 方法
+AlphaPos.prototype.checkout = function () {
+  let totalAmount = 0
+  document.querySelectorAll('[data-drink-price]').forEach(drink => {
+    console.log(drink)
+    console.log(drink.innerText)
+    totalAmount += Number(drink.innerText)
+  })
+  return totalAmount
+}
+// 選取 checkoutButton
+const checkoutButton = document.querySelector('[data-alpha-pos="checkout"]')
+// 監聽checkoutButton
+checkoutButton.addEventListener('click', function () {
+  // 1. 計算訂單總金額
+  alert(`Total amount of drinks：$${alphaPos.checkout()}`)
+  // 2. 清空訂單
+  alphaPos.clearOrder(orderLists)
+})
+
+// 清空訂單
+AlphaPos.prototype.clearOrder = target => {
+  target.querySelectorAll('.card').forEach(card => {
+    card.remove()
+  })
+}
