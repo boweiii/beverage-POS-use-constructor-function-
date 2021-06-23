@@ -22,7 +22,7 @@ Drink.prototype.price = function () {
       alert('No this drink')
   }
 }
-
+// 新增訂單 ↓↓↓
 // 想要把 AlphaPos 點餐機的功能都放進 AlphaPos 建構式函式的原型，以方便管理。
 // AlphaPos Constructor Function
 function AlphaPos() {
@@ -62,6 +62,7 @@ function AlphaPos() {
 }
 
 const alphaPos = new AlphaPos()
+console.log(alphaPos)
 // 選取addButton
 const addDrinkButton = document.querySelector('[data-alpha-pos="add-drink"]')
 // 選取左側的訂單區
@@ -87,4 +88,13 @@ addDrinkButton.addEventListener('click', function () {
   alphaPos.addDrink(drink)
 })
 
-
+// 刪除訂單 ↓↓↓
+orderLists.addEventListener('click', event => {
+  let isDeleteButton = event.target.matches('[data-alpha-pos="delete-drink"]')
+  if (!isDeleteButton) {
+    return
+  }
+  alphaPos.deleteDrink(event.target.parentElement.parentElement.parentElement)
+})
+// 添加一個 deleteDrink 方法
+AlphaPos.prototype.deleteDrink = target => { target.remove() }
