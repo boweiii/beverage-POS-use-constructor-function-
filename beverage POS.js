@@ -23,15 +23,68 @@ Drink.prototype.price = function () {
   }
 }
 
-let blackTea = new Drink('Black Tea', 'Half Sugar', 'No Ice')
-console.log(blackTea)
-console.log(blackTea.price())
+// 想要把 AlphaPos 點餐機的功能都放進 AlphaPos 建構式函式的原型，以方便管理。
+// AlphaPos Constructor Function
+function AlphaPos() {
+  // 將取得所選取之品項之名稱/甜度/冰塊之方法寫入原型
+  AlphaPos.prototype.getCheckedValue = function (inputName) {
+    let selectedOption = ''
+    document.querySelectorAll(`[name=${inputName}]`).forEach(function (item) {
+      if (item.checked) {
+        selectedOption = item.value
+      }
+    })
+    return selectedOption
+  }
+  // 將新增飲料卡片至左側清單區之方法寫進原型
+  AlphaPos.prototype.addDrink = function (drink) {
+    let orderListsCard = `
+    <div class="card mb-3">
+    <div class="card-body pt-3 pr-3">
+      <!-- delete drink icon -->
+      <div class="text-right">
+        <span data-alpha-pos="delete-drink">×</span>
+      </div>
+      <!-- /delete drink icon -->
+      <h6 class="card-title mb-1">${drink.name}</h6>
+      <div class="card-text">${drink.ice}</div>
+      <div class="card-text">${drink.sugar}</div>
+    </div>
+    <div class="card-footer text-right py-2">
+      <div class="card-text text-muted">$ <span data-drink-price>${drink.price()}</span></div>
+    </div>
+  </div>
+  `
 
-let lemonGreenTea = new Drink('Lemon Green Tea', 'No Sugar', 'Less Ice')
-console.log(lemonGreenTea)
-console.log(lemonGreenTea.price())
+    orderLists.insertAdjacentHTML('afterbegin', orderListsCard)
+  }
 
-let matchaLatte = new Drink('Matcha Latte', 'Less Sugar', 'Regular Ice')
-console.log(matchaLatte)
-console.log(matchaLatte.price())
-// 使用constructor function產生飲料物件 ↑↑↑
+}
+
+const alphaPos = new AlphaPos()
+// 選取addButton
+const addDrinkButton = document.querySelector('[data-alpha-pos="add-drink"]')
+// 選取左側的訂單區
+const orderLists = document.querySelector('[data-order-lists]')
+//監聽add button
+addDrinkButton.addEventListener('click', function () {
+  // 1. 取得店員選擇的飲料品項、甜度和冰塊
+  const drinkName = alphaPos.getCheckedValue('drink')
+  const ice = alphaPos.getCheckedValue('ice')
+  const sugar = alphaPos.getCheckedValue('sugar')
+  console.log(`${drinkName}, ${ice}, ${sugar}`)
+
+  // 2. 如果沒有選擇飲料品項，跳出提示
+  if (!drinkName) {
+    alert('Please choose at least one item.')
+    return
+  }
+  // 3. 建立飲料實例，並取得飲料價格
+  const drink = new Drink(drinkName, sugar, ice)
+  console.log(drink)
+  console.log(drink.price())
+  // 4. 將飲料實例產生成左側訂單區的畫面
+  alphaPos.addDrink(drink)
+})
+
+
